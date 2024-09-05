@@ -1,0 +1,2 @@
+rootProject.name = 'FeignClient'
+include 'customer-service', 'product-service', 'order-service', 'common'

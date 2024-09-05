@@ -1,0 +1,26 @@
+package com.api.model.entity;
+
+import com.api.model.dto.CustomerDto;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Entity
+@Table(name = "customer_tb")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class Customer {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String name;
+    private String email;
+
+    public CustomerDto toCustomerResponse() {
+        return new CustomerDto(id, name, email);
+    }
+}
