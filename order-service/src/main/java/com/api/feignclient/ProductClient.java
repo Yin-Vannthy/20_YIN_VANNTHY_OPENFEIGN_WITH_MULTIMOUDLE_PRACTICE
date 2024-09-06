@@ -5,7 +5,6 @@ import com.api.dto.ProductDto;
 import com.api.response.ApiResponse;
 import jakarta.validation.constraints.Min;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -15,7 +14,4 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface ProductClient {
     @GetMapping("/{id}")
     ApiResponse<ProductDto> getById(@PathVariable @Min(1) Long id);
-
-    @DeleteMapping("/{id}")
-    ApiResponse<String> deleteById(@PathVariable @Min(1) Long id);
 }
