@@ -3,6 +3,7 @@ package com.api.service.serviceImpl;
 import com.api.dto.ProductDto;
 import com.api.enums.Enums;
 import com.api.exception.CustomException;
+import com.api.feignclient.OrderClient;
 import com.api.model.entity.Product;
 import com.api.model.request.ProductRequest;
 import com.api.repository.ProductRepository;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,7 +21,13 @@ import java.util.List;
 @AllArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
+    private final OrderClient orderClient;
 
+    private void deleteOrderByProductId(Long productId) {
+        orderClient.deleteByProductId(productId);
+    }
+
+    @Transactional
     @Override
     public ProductDto save(ProductRequest productRequest) {
         return productRepository.save(productRequest.toEntity()).toProductResponse();
@@ -44,6 +52,7 @@ public class ProductServiceImpl implements ProductService {
                 .map(Product::toProductResponse).toList();
     }
 
+    @Transactional
     @Override
     public ProductDto updateById(Long id, ProductRequest productRequest) {
         return productRepository.findById(id)
@@ -53,13 +62,16 @@ public class ProductServiceImpl implements ProductService {
                 .toProductResponse();
     }
 
+    @Transactional
     @Override
     public String deleteById(Long id) {
         productRepository.findById(id).ifPresentOrElse(
                 product -> productRepository.deleteById(id),
-                () -> { throw new CustomException("No Product with Id : " + id + " was found."); }
+                () -> {
+                    throw new CustomException("No Product with Id : " + id + " was found.");
+                }
         );
-
+        deleteOrderByProductId(id);
         return "Product with Id : " + id + " was deleted successfully";
     }
 }

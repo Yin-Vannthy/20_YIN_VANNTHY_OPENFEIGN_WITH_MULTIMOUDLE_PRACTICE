@@ -3,6 +3,7 @@ package com.api.service.serviceImpl;
 import com.api.dto.CustomerDto;
 import com.api.enums.Enums;
 import com.api.exception.CustomException;
+import com.api.feignclient.OrderClient;
 import com.api.model.entity.Customer;
 import com.api.model.request.CustomerRequest;
 import com.api.repository.CustomerRepository;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,7 +21,13 @@ import java.util.List;
 @AllArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
+    private final OrderClient orderClient;
 
+    private void deleteOrderByCustomerId(Long customerId) {
+        orderClient.deleteByCustomerId(customerId);
+    }
+
+    @Transactional
     @Override
     public CustomerDto save(CustomerRequest customerRequest) {
         if (customerRepository.findByEmail(customerRequest.getEmail()) != null) {
@@ -46,6 +54,7 @@ public class CustomerServiceImpl implements CustomerService {
                 .map(Customer::toCustomerResponse).toList();
     }
 
+    @Transactional
     @Override
     public CustomerDto updateById(Long id, CustomerRequest customerRequest) {
         Customer customer = customerRepository.findByEmail(customerRequest.getEmail());
@@ -60,13 +69,16 @@ public class CustomerServiceImpl implements CustomerService {
                 .toCustomerResponse();
     }
 
+    @Transactional
     @Override
     public String deleteById(Long id) {
         customerRepository.findById(id).ifPresentOrElse(
                 customer -> customerRepository.deleteById(id),
-                () -> { throw new CustomException("No customer with Id : " + id + " was found."); }
+                () -> {
+                    throw new CustomException("No customer with Id : " + id + " was found.");
+                }
         );
-
+        deleteOrderByCustomerId(id);
         return "Customer with Id : " + id + " was deleted successfully";
     }
 }

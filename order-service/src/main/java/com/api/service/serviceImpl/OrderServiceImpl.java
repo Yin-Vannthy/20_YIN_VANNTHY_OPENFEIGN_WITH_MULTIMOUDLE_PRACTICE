@@ -7,6 +7,7 @@ import com.api.exception.CustomException;
 import com.api.feignclient.CustomerClient;
 import com.api.feignclient.ProductClient;
 import com.api.model.dto.OrderDto;
+import com.api.model.entity.Order;
 import com.api.model.request.OrderRequest;
 import com.api.repository.OrderRepository;
 import com.api.service.OrderService;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -71,13 +73,13 @@ public class OrderServiceImpl implements OrderService {
                 .getContent()
                 .stream()
                 .map(order -> {
-                        CustomerDto customer = getCustomerById(order.getCustomerId());
-                        Set<ProductDto> products = order.getProductIds()
-                                .stream()
-                                .map(this::getProductById)
-                                .collect(Collectors.toSet());
-                        return order.toOrderResponse(customer, products);
-                    }
+                            CustomerDto customer = getCustomerById(order.getCustomerId());
+                            Set<ProductDto> products = order.getProductIds()
+                                    .stream()
+                                    .map(this::getProductById)
+                                    .collect(Collectors.toSet());
+                            return order.toOrderResponse(customer, products);
+                        }
                 ).collect(Collectors.toList());
     }
 
@@ -86,7 +88,9 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.findById(id)
                 .ifPresentOrElse(
                         order -> orderRepository.deleteById(id),
-                        () -> {throw new CustomException("No order with Id : " + id + " was found.");}
+                        () -> {
+                            throw new CustomException("No order with Id : " + id + " was found.");
+                        }
                 );
 
         return "Order with Id : " + id + " was deleted successfully";
@@ -107,5 +111,39 @@ public class OrderServiceImpl implements OrderService {
                             .toOrderResponse(customer, products);
                 })
                 .orElseThrow(() -> new CustomException("No order with Id : " + id + " was found."));
+    }
+
+    @Transactional
+    @Override
+    public String deleteByCustomerId(Long id) {
+        orderRepository.findByCustomerId(id)
+                .ifPresentOrElse(
+                        order -> orderRepository.deleteOrdersByCustomerId(id),
+                        () -> {throw new CustomException("No order with customer Id : " + id + " was found.");}
+                );
+
+        return "Order with customer Id : " + id + " was deleted successfully";
+    }
+
+    @Override
+    public String deleteByProductId(Long productId) {
+        List<Order> orders = orderRepository.findByProductIdsContaining(productId)
+                .orElseThrow(() -> new CustomException("No order with product Id : " + productId + " was found."));
+
+        orders.forEach(order -> {
+            List<Long> productIds = order.getProductIds()
+                    .stream()
+                    .filter(id -> !id.equals(productId))
+                    .collect(Collectors.toList());
+
+            if (productIds.isEmpty()) {
+                orderRepository.delete(order);
+            } else {
+                order.setProductIds(productIds);
+                orderRepository.save(order);
+            }
+        });
+
+        return "Order with product Id : " + productId + " was deleted successfully";
     }
 }

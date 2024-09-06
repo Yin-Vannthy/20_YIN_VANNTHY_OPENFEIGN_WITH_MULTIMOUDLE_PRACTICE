@@ -5,6 +5,7 @@ import com.api.enums.Enums;
 import com.api.model.dto.OrderDto;
 import com.api.model.request.OrderRequest;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
@@ -20,4 +21,8 @@ public interface OrderService {
     String deleteById(Long id);
 
     OrderDto updateById(Long id, @Valid OrderRequest orderRequest);
+
+    String deleteByCustomerId(@Min(1) Long id);
+
+    String deleteByProductId(@Min(1) Long id);
 }

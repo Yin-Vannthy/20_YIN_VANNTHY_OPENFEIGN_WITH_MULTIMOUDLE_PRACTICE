@@ -77,4 +77,24 @@ public class OrderController {
                 )
         );
     }
+
+    @DeleteMapping("/customer/{id}")
+    public ResponseEntity<ApiResponse<String>> deleteByCustomerId(@PathVariable @Min(1) Long id){
+        return ResponseEntity.ok(
+                APIResponseUtil.apiResponse(
+                        orderService.deleteByCustomerId(id),
+                        HttpStatus.OK
+                )
+        );
+    }
+
+    @DeleteMapping("/product/{id}")
+    public ResponseEntity<ApiResponse<String>> deleteByProductId(@PathVariable @Min(1) Long id){
+        return ResponseEntity.ok(
+                APIResponseUtil.apiResponse(
+                        orderService.deleteByProductId(id),
+                        HttpStatus.OK
+                )
+        );
+    }
 }

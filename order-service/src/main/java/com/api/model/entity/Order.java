@@ -4,10 +4,7 @@ import com.api.dto.CustomerDto;
 import com.api.dto.ProductDto;
 import com.api.model.dto.OrderDto;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
