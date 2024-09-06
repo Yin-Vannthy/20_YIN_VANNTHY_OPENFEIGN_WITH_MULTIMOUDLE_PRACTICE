@@ -1,8 +1,8 @@
 package com.api.service.serviceImpl;
 
+import com.api.dto.CustomerDto;
 import com.api.enums.Enums;
 import com.api.exception.CustomException;
-import com.api.model.dto.CustomerDto;
 import com.api.model.entity.Customer;
 import com.api.model.request.CustomerRequest;
 import com.api.repository.CustomerRepository;

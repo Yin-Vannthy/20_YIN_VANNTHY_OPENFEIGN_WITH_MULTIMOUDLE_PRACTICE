@@ -1,6 +1,6 @@
 package com.api.model.entity;
 
-import com.api.model.dto.ProductDto;
+import com.api.dto.ProductDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,7 +18,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private Float price;
+    private Double price;
 
     public ProductDto toProductResponse() {
         return new ProductDto(id, name, price);

@@ -1,4 +1,4 @@
-package com.api.model.dto;
+package com.api.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,8 +7,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ProductDto {
+public class CustomerDto {
     private Long id;
     private String name;
-    private Float price;
+    private String email;
+
 }

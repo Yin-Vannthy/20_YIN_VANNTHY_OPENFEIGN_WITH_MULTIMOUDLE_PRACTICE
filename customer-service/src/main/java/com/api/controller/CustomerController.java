@@ -1,7 +1,7 @@
 package com.api.controller;
 
+import com.api.dto.CustomerDto;
 import com.api.enums.Enums;
-import com.api.model.dto.CustomerDto;
 import com.api.model.request.CustomerRequest;
 import com.api.response.ApiResponse;
 import com.api.service.CustomerService;

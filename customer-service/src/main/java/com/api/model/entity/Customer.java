@@ -1,6 +1,6 @@
 package com.api.model.entity;
 
-import com.api.model.dto.CustomerDto;
+import com.api.dto.CustomerDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,10 +1,10 @@
 package com.api.controller;
 
-import com.api.dto.ProductDto;
 import com.api.enums.Enums;
-import com.api.model.request.ProductRequest;
+import com.api.model.dto.OrderDto;
+import com.api.model.request.OrderRequest;
 import com.api.response.ApiResponse;
-import com.api.service.ProductService;
+import com.api.service.OrderService;
 import com.api.util.APIResponseUtil;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -16,52 +16,43 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @RestController
-@RequestMapping("/api/v1/products")
+@RequestMapping("/api/v1/orders")
 @AllArgsConstructor
-public class ProductController {
-    private final ProductService productService;
+public class OrderController {
+    private final OrderService orderService;
 
     @PostMapping("/save")
-    public ResponseEntity<ApiResponse<ProductDto>> save(@Valid @RequestBody ProductRequest productRequest){
+    public ResponseEntity<ApiResponse<OrderDto>> save(@Valid @RequestBody OrderRequest orderRequest){
         return ResponseEntity.ok(
                 APIResponseUtil.apiResponse(
-                        productService.save(productRequest),
+                        orderService.save(orderRequest),
                         HttpStatus.CREATED
                 )
         );
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<ProductDto>> getById(@PathVariable @Min(1) Long id){
+    public ResponseEntity<ApiResponse<OrderDto>> getById(@PathVariable @Min(1) Long id){
         return ResponseEntity.ok(
                 APIResponseUtil.apiResponse(
-                        productService.getById(id),
+                        orderService.getById(id),
                         HttpStatus.OK
                 )
         );
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<ProductDto>>> getAll(
+    public ResponseEntity<ApiResponse<List<OrderDto>>> getAll(
             @RequestParam(defaultValue = "0", required = false) @Min(0)  Integer pageNo,
             @RequestParam(defaultValue = "10", required = false) @Min(1)  Integer pageSize,
-            @RequestParam(defaultValue = "id", required = false) Enums.Product sortBy,
+            @RequestParam(defaultValue = "id", required = false) Enums.Order sortBy,
             @RequestParam(defaultValue = "DESC", required = false) Sort.Direction sortDirection
     ){
         return ResponseEntity.ok(
                 APIResponseUtil.apiResponse(
-                        productService.getAll(pageNo, pageSize, sortBy, sortDirection),
-                        HttpStatus.OK
-                )
-        );
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<ProductDto>> updateById(@PathVariable Long id, @Valid @RequestBody ProductRequest productRequest){
-        return ResponseEntity.ok(
-                APIResponseUtil.apiResponse(
-                        productService.updateById(id, productRequest),
+                        orderService.getAll(pageNo, pageSize, sortBy, sortDirection),
                         HttpStatus.OK
                 )
         );
@@ -71,7 +62,17 @@ public class ProductController {
     public ResponseEntity<ApiResponse<String>> deleteById(@PathVariable @Min(1) Long id){
         return ResponseEntity.ok(
                 APIResponseUtil.apiResponse(
-                        productService.deleteById(id),
+                        orderService.deleteById(id),
+                        HttpStatus.OK
+                )
+        );
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<OrderDto>> updateById(@PathVariable @Min(1) Long id, @Valid @RequestBody OrderRequest orderRequest){
+        return ResponseEntity.ok(
+                APIResponseUtil.apiResponse(
+                        orderService.updateById(id, orderRequest),
                         HttpStatus.OK
                 )
         );

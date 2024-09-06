@@ -19,7 +19,7 @@ public class ProductRequest {
     @NotNull(message = "Price cannot be null")
     @DecimalMin(value = "0.05", message = "Price must be greater than 0")
     @Digits(integer = 10, fraction = 2, message = "Invalid unit price format. Maximum 10 integer digits and 2 decimal digits allowed.")
-    private Float price;
+    private Double price;
 
     public Product toEntity() {
         return new Product(null,name, price);

@@ -1,8 +1,8 @@
 package com.api.service.serviceImpl;
 
+import com.api.dto.ProductDto;
 import com.api.enums.Enums;
 import com.api.exception.CustomException;
-import com.api.model.dto.ProductDto;
 import com.api.model.entity.Product;
 import com.api.model.request.ProductRequest;
 import com.api.repository.ProductRepository;
